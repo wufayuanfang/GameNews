@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>XX游戏资讯</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {% load static %}
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'users/css_js/main.css' %}">
+    <style data-emotion="css"></style>
+</head>
+<style>
+    input[type=date]::-webkit-inner-spin-button {
+        visibility: hidden;
+    }
+</style>
+<body>
+<div>
+    <div class="gnav_container gnav_container-twoRow">
+        <nav class="gnav gnav-logoCenter">
+            <div class="container">
+                <div class="gnav_menuBtns"><a class="gnav_menuBtn gnav_item" role="button" tabindex="0"
+                                              target="_blank">
+                    <svg aria-hidden="true" focusable="false" data-prefix="gfas" data-icon="bars"
+                         class="svg-inline--fa fa-sm" role="img" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 9 8">
+                        <path fill="currentColor"
+                              d="M1.26666667,0.65 L8.06666667,0.65 C8.39803752,0.65 8.66666667,0.91862915 8.66666667,1.25 C8.66666667,1.58137085 8.39803752,1.85 8.06666667,1.85 L1.26666667,1.85 C0.935295817,1.85 0.666666667,1.58137085 0.666666667,1.25 C0.666666667,0.91862915 0.935295817,0.65 1.26666667,0.65 Z M1.26666667,3.65 L8.06666667,3.65 C8.39803752,3.65 8.66666667,3.91862915 8.66666667,4.25 C8.66666667,4.58137085 8.39803752,4.85 8.06666667,4.85 L1.26666667,4.85 C0.935295817,4.85 0.666666667,4.58137085 0.666666667,4.25 C0.666666667,3.91862915 0.935295817,3.65 1.26666667,3.65 Z M1.26666667,6.65 L8.06666667,6.65 C8.39803752,6.65 8.66666667,6.91862915 8.66666667,7.25 C8.66666667,7.58137085 8.39803752,7.85 8.06666667,7.85 L1.26666667,7.85 C0.935295817,7.85 0.666666667,7.58137085 0.666666667,7.25 C0.666666667,6.91862915 0.935295817,6.65 1.26666667,6.65 Z"></path>
+                    </svg>
+                </a></div>
+                <div class="gnav_body">
+                    <div class="gnav_logo">
+                        <div class="gnav_logo_icon"></div>
+                    </div>
+                    <div class="gnav_contentItems"><a class="gnav_item" href="{% url 'index' %}">首页</a><a
+                            class="gnav_item" href="{% url 'discount_all' %}">游戏</a><a
+                            class="gnav_item" href="{% url 'news' %}">资讯</a><a
+                            class="gnav_item" href="{% url 'video' %}">视频</a><a
+                            class="gnav_item" href="{% url 'music' %}">音乐</a>
+                    </div>
+                </div>
+                <div class="gnav_alwaysBtns"><a class="gnav_menuBtn gnav_item" role="button" tabindex="0"
+                                                target="_blank">
+                    <svg aria-hidden="true" focusable="false" data-prefix="gfas" data-icon="search"
+                         class="svg-inline--fa" role="img" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 11 11">
+                        <path fill="currentColor"
+                              d="M7.97229897,7.23067439 L10.3141294,9.57250481 C10.5419352,9.80031064 10.5419352,10.1696569 10.3141294,10.3974627 C10.0863235,10.6252686 9.71697731,10.6252686 9.48917147,10.3974627 L7.07954816,7.9878394 C6.40679319,8.41758833 5.60747456,8.66666667 4.75,8.66666667 C2.3568339,8.66666667 0.416666667,6.72649944 0.416666667,4.33333333 C0.416666667,1.94016723 2.3568339,1.00364161e-13 4.75,1.00364161e-13 C7.1431661,1.00364161e-13 9.08333333,1.94016723 9.08333333,4.33333333 C9.08333333,5.44724359 8.66299995,6.46301255 7.97229897,7.23067439 Z M7.91666667,4.33333333 C7.91666667,2.58449944 6.4988339,1.16666667 4.75,1.16666667 C3.0011661,1.16666667 1.58333333,2.58449944 1.58333333,4.33333333 C1.58333333,6.08216723 3.0011661,7.5 4.75,7.5 C6.4988339,7.5 7.91666667,6.08216723 7.91666667,4.33333333 Z"></path>
+                    </svg>
+                </a></div>
+            </div>
+        </nav>
+    </div>
+    <div class="settingsPage pageContainer">
+        <div class="container">
+            <div class="ah_section"><h2 class="ah_title"><span>上传资讯</span></h2>
+                <div class="settingsPage_layout">
+                    <div class="settingsPage_index">
+                        <div>
+                            <div style="padding-bottom: 0px;"></div>
+                            <div style="top: 60px; transform: translateZ(0px);">
+                                {% include 'users/tab_info.html' %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settingsPage_body">
+                        <div class="settingsPage_box" id="nopop_account">
+                            <div class="settingsPage_box_header">文章上传</div>
+                            <div class="settingsPage_box_body">
+                                <form method="POST" action="{% url 'orginal_editor' %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="form-group row"><label
+                                            class="col-form-label col-sm-2">文章标题</label>
+                                        <div class="col-sm-10">
+                                            <input name="title" placeholder="文章标题" class="form-control" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row"><label
+                                            class="col-form-label col-sm-2">文章作者</label>
+                                        <div class="col-sm-10">
+                                            <input name="from" placeholder="{{ request.user.username }}"
+                                                   class="form-control" type="text" value="{{ request.user.username }}"
+                                                   readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row"><label
+                                            class="col-form-label col-sm-2">文章封面</label>
+                                        <div class="col-sm-10">
+                                            <input name="cover" placeholder="文章封面" accept="image/jpeg" type="file">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row"><label
+                                            class="col-form-label col-sm-2">文章内容</label>
+                                        <div class="col-sm-10">
+                                            {{ gnew_form.media }}
+                                            {{ gnew_form.article_contents }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group row"><label
+                                            class="col-form-label col-sm-2">文章视频</label>
+                                        <div class="col-sm-10">
+                                            <input name="video" placeholder="文章视频" accept="video/mp4" type="file">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row"><label
+                                            class="col-form-label col-sm-2"></label>
+                                        <div class="col-sm-10">
+                                            <button class="btn btn-assist btn-ellipse" type="submit"
+                                                    style="background: #6ddc67;">确认上传
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer"></footer>
+        <div class="globalActions"></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
+</div>
+<div>
+    <div class="sideDrawer"></div>
+</div>
+<div>
+    <div class="sideDrawer"></div>
+</div>
+<div class="ReactModalPortal"></div>
+<div class="ReactModalPortal"></div>
+<div class="ReactModalPortal"></div>
+<div class="ReactModalPortal"></div>
+<div class="ReactModalPortal"></div>
+</body>
+</html>
+{% if messages %}
+    <script>
+        alert('{{ messages }}');
+    </script>
+{% endif %}

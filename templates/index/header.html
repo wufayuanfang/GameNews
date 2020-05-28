@@ -1,0 +1,62 @@
+{% load static %}
+<link rel="stylesheet" type="text/css"
+      href="{% static 'users/css_js/main.css' %}">
+<div class="gnav_container gnav_container-twoRow">
+    <nav class="gnav gnav-logoCenter">
+        <div class="container">
+            <div class="gnav_menuBtns"><a class="gnav_menuBtn gnav_item" role="button" tabindex="0">
+                <svg aria-hidden="true" focusable="false" data-prefix="gfas" data-icon="bars"
+                     class="svg-inline--fa fa-sm" role="img" xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 9 8">
+                    <path fill="currentColor"
+                          d="M1.26666667,0.65 L8.06666667,0.65 C8.39803752,0.65 8.66666667,0.91862915 8.66666667,1.25 C8.66666667,1.58137085 8.39803752,1.85 8.06666667,1.85 L1.26666667,1.85 C0.935295817,1.85 0.666666667,1.58137085 0.666666667,1.25 C0.666666667,0.91862915 0.935295817,0.65 1.26666667,0.65 Z M1.26666667,3.65 L8.06666667,3.65 C8.39803752,3.65 8.66666667,3.91862915 8.66666667,4.25 C8.66666667,4.58137085 8.39803752,4.85 8.06666667,4.85 L1.26666667,4.85 C0.935295817,4.85 0.666666667,4.58137085 0.666666667,4.25 C0.666666667,3.91862915 0.935295817,3.65 1.26666667,3.65 Z M1.26666667,6.65 L8.06666667,6.65 C8.39803752,6.65 8.66666667,6.91862915 8.66666667,7.25 C8.66666667,7.58137085 8.39803752,7.85 8.06666667,7.85 L1.26666667,7.85 C0.935295817,7.85 0.666666667,7.58137085 0.666666667,7.25 C0.666666667,6.91862915 0.935295817,6.65 1.26666667,6.65 Z"></path>
+                </svg>
+            </a></div>
+            <div class="gnav_body">
+                <div class="gnav_logo">
+                    <div class="gnav_logo_icon"></div>
+                </div>
+                <div class="gnav_contentItems"><a class="gnav_item" href="{% url 'index' %}">首页</a><a
+                        class="gnav_item"
+                        href="{% url 'discount_all' %}">游戏</a><a
+                        class="gnav_item" href="{% url 'news' %}">资讯</a><a
+                        class="gnav_item" href="{% url 'video' %}">视频</a><a
+                        class="gnav_item" href="{% url 'music' %}">音乐</a>
+                </div>
+            </div>
+
+
+            {% if request.user.is_authenticated %}
+                <div class="gnav_userItems">
+                    <a class="btn btn-sm btn-dark btn-ellipse gnav_item"
+                       href="{% url 'setting' %}">{{ request.user.username }}</a>
+                    <a class="btn btn-sm btn-dark btn-ellipse gnav_item" href="{% url 'logout' %}">登出</a>
+                    <a class="gnav_item" role="button" tabindex="0" href="{% url 'search' %}">
+                        <img class="search" src="{% static 'index/img/search.png' %}"/>
+                    </a>
+                </div>
+            {% else %}
+                <div class="gnav_userItems"><a class="btn btn-sm btn-dark btn-ellipse gnav_item"
+                                               href="{% url 'login' %}">登录</a><a
+                        class="gnav_item" role="button" tabindex="0" href="{% url 'search' %}"><img
+                        class="search" src="{% static 'index/img/search.png' %}"/></a></div>
+            {% endif %}
+
+        </div>
+    </nav>
+</div>
+<style>
+    .box-right {
+        float: right;
+    }
+
+    .btn-default {
+    {#background: #dc3a3d;#} color: black;
+        float: left;
+    }
+
+    .search {
+        width: 90%;
+        float: left;
+    }
+</style>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{{ article.article_title }}</title>
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'gnews/css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'gnews/css/news.css' %}">
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+{% include 'index/header.html' %}
+<div id="app">
+    <div id="app_inner"><img src="" alt="gamecore app logo"
+                             style="position: absolute; left: -9999px; top: -9999px;">
+        <div class="messagesBox">
+            <div></div>
+        </div>
+        <div>
+            <div></div>
+            <div class="gnav_container gnav_container-twoRow">
+                <nav class="gnav gnav-logoCenter gnav-shrink gnav-fixed gnav-hide"></nav>
+            </div>
+            <div class="newsPage">
+                <div class="container">
+                    <div class="newsPage_main">
+                        <div class="newsPage_inner">
+                            <div class="newsPage_content">
+                                <div class="mb-5"><img class="newsPage_cover"
+                                                       src="{{ article.article_cover }}"
+                                                       alt="{{ article.article_title }}"></div>
+                                <div class="originalPage_titleGroup"><h1 class="originalPage_title">
+                                    {{ article.article_title }}</h1></div>
+                                <div class="col-12 alert alert-success">
+                                    <div>
+                                        浏览：{{ article.total_views }}
+                                    </div>
+                                </div>
+                                <div class="newsPage_story">
+                                    <div class="newsPage_info">
+                                        <div>
+                                            <div style="padding-bottom: 0px;"></div>
+                                            <div style="transform: translateZ(0px); position: fixed; top: 0px; left: 89.6px; width: 48px;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="newsPage_news">
+                                        <div class="story story-show">
+                                            <div class="md-RichEditor-root">
+                                                <div class="md-RichEditor-editor md-RichEditor-readonly">
+                                                    <div class="DraftEditor-root">
+                                                        <div class="DraftEditor-editorContainer">
+                                                            <div aria-describedby="placeholder-aap6d"
+                                                                 class="public-DraftEditor-content"
+                                                                 contenteditable="false" spellcheck="false"
+                                                                 style="outline: none; user-select: text; white-space: pre-wrap; overflow-wrap: break-word;">
+
+
+                                                                <span data-text="true">
+                                                                    {% autoescape off %}
+                                                                        {{ article.article_contents }}
+                                                                    {% endautoescape %}
+                                                                </span>
+                                                                {% if images %}
+                                                                    {% for image in images %}
+                                                                        <figure class="story_block story_block-atomic story_block-atomic-image story_block-atomic-image-normal"
+                                                                                data-block="true" data-editor="aap6d"
+                                                                                data-offset-key="8s9rg-0-0"
+                                                                                contenteditable="false">
+                                                                            <div class="story_image form_uploading_container">
+                                                                                <img src="{{ image.image_links }}"
+                                                                                     alt="{{ image.image_title }}">
+                                                                            </div>
+                                                                        </figure>
+                                                                    {% endfor %}
+                                                                {% endif %}
+
+                                                                {% if article.article_video %}
+                                                                    <a href="{{ article.article_video }}">点击播放视频</a>
+                                                                {% endif %}
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-5 d-flex justify-content-between">
+                                            <div class="text-nowrap">
+                                                <a class="o_vote o_vote-up mr-3 originalButton"
+                                                   role="button" tabindex="0" id="poll">
+                                                    <span class="glyphicon glyphicon-thumbs-up"
+                                                          aria-hidden="true"></span>
+                                                    <span class="o_vote_num">{{ vote_num }}</span></a>
+{#                                                <a class="o_bookmark originalButton" role="button" tabindex="0">#}
+{#                                                    <span class="glyphicon glyphicon-thumbs-up"#}
+{#                                                          aria-hidden="true"></span>#}
+{#                                                    <span class="o_bookmark_num">举报</span></a>#}
+                                            </div>
+                                            <div class="text-nowrap">
+                                                <a class="originalButton originalButton-circle" role="button"
+                                                   tabindex="0" href="{% url 'index' %}">返回</a></div>
+                                        </div>
+                                        <form role="form" id="comment_form" style="margin-top: 20px">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="id_comment">添加评论</label>
+                                                <textarea class="form-control" name="comment" rows="3"
+                                                          id="id_comment"></textarea>
+                                                <input type="hidden" name="article_id"
+                                                       value="{{ article.article_id }}"/>
+                                                <input type="hidden" name="user_id"
+                                                       value="{{ request.user.id }}"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-default"
+                                                        style="background: #ff752a">发表评论
+                                                </button>
+                                            </div>
+                                        </form>
+                                        {% include 'comments/comment.html' %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#comment_form').submit(function () {
+            if ($("#id_comment").val().length == 0) {
+                alert("Error:请输入您的评论");
+                $("#id_comment").focus();
+                return false;
+            }
+            ;
+            $.ajax({
+                type: "POST",
+                data: $('#comment_form').serialize(),
+                url: "{% url 'comment' %}",
+                cache: false,
+                dataType: "html",
+                success: function (html, textStatus) {
+                    window.location.reload();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("评论出错，" + errorThrown);
+                }
+            });
+            return false;
+        });
+        $('#poll').bind("click", function () {
+            var poll_date = {
+                user_id:{{ request.user.id }},
+                article_id:{{ article.article_id }}
+            };
+            $.ajax({
+                type: "GET",
+                data: poll_date,
+                url: "{% url 'vote' %}",
+                cache: false,
+                success: function (date) {
+                    window.location.reload();
+                    alert(date)
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("点赞出错，" + errorThrown);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends 'index/discount_all.html' %}
+{% block discount %}
+    <div class="gtabs gtabs-compact">
+        <ul>
+            <li><a data-key="all"
+                   href="{% url 'discount_all' %}"><span class="gtab_text">全部</span></a></li>
+            <li class="is_active"><a data-key="Steam"><span class="gtab_text">Steam</span></a></li>
+            <li><a data-key="Nintendo Switch"
+                   href="{% url 'discount_switch' %}"><span class="gtab_text">Switch</span></a></li>
+            <li><a data-key="PlayStation 4"
+                   href="{% url 'discount_ps' %}"><span class="gtab_text">PS4</span></a></li>
+            <li><a data-key="Xbox One"
+                   href="{% url 'discount_xbox' %}"><span class="gtab_text">Xbox</span></a></li>
+        </ul>
+    </div>
+{% endblock %}

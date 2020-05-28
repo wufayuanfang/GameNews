@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!-- saved from url=(0065)http://demo.cssmoban.com/cssthemes6/quar_7_my_login/register.html -->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    {% load static %}
+    <meta name="author" content="Kodinger">
+    <title>Register Page Snippet</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'users/css_js/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'users/css_js/my-login.css' %}">
+</head>
+<body class="my-login-page">
+<section class="h-100">
+    <div class="container h-100">
+        <div class="row justify-content-md-center h-100">
+            <div class="card-wrapper">
+                <div class="brand">
+                    <img src="{% static 'users/img/logo.jpg' %}">
+                </div>
+                <div class="card fat">
+                    <div class="card-body">
+                        <h4 class="card-title">Register</h4>
+                        <form method="POST" action="{% url 'register' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="username">Name</label>
+                                <input id="name" type="text" class="form-control" name="username" required=""
+                                       autofocus="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">E-Mail Address</label>
+                                <input id="email" type="email" class="form-control" name="email" required="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <div style="position:relative"><input id="password" type="password"
+                                                                      class="form-control show" name="password"
+                                                                      required="" data-eye=""
+                                                                      style="padding-right: 60px;"><input type="hidden"
+                                                                                                          id="passeye-0">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="">验证码</label>
+                                {{ form.captcha }}
+                            </div>
+                            <div class="form-group">
+                                <label>
+{#                                    <input type="checkbox" name="aggree" value="1"> I agree to the Terms and Conditions#}
+                                    <h5 style="color: red"> {{ tip }}</h5>
+                                </label>
+                            </div>
+
+                            <div class="form-group no-margin">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    Register
+                                </button>
+                            </div>
+                            <div class="margin-top20 text-center">
+                                Already have an account? <a
+                                    href="{% url 'login' %}">Login</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="footer">
+                    友情推广链接 <a href="http://www.cssmoban.com/" target="_blank"
+                                                                      title="这是一个广告">这是一个广告</a> 一个链接 <a
+                        href="http://www.cssmoban.com/" title="网页模板" target="_blank">这是一个广告</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'users/css_js/jquery.min.js' %}"></script>
+<script src="{% static 'users/css_js/bootstrap.min.js' %}"></script>
+<script src="{% static 'users/css_js/my-login.js' %}"></script>
+
+</body>
+</html>

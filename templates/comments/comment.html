@@ -1,0 +1,65 @@
+<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<div class="panel panel-default" style="margin-top: 60px">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            评论
+        </h3>
+    </div>
+    {% for comment in comments %}
+        <div class="panel-body">
+            <div class="container">
+                <h6>{{ comment.user.username }}<small>&ensp;{{ comment.created_time }}</small>
+                </h6>
+                <p>{{ comment.text }}</p>{% if comment.user.username == user.username %}
+                <input type="hidden" id="commnet_id" value="{{ comment.id }}">
+                <button style="font-size: small; color: green;float: right;border: none"
+                        onClick="delEvent({{ comment.id }})" id="commne_del">删除
+                </button>
+            {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <div class="panel-body">
+            <div class="container">
+                <p>无评论</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<ul class="pagination pagination-sm" style="margin-left: 38%">
+    {% if comments.number > 1 %}
+        <li><a href="?article_id={{ article.article_id }}&page=1">&laquo;</a></li>
+    {% endif %}
+    {% if comments.has_previous %}
+        <li><a href="?article_id={{ article.article_id }}&page={{ comments.previous_page_number }}">上一页</a></li>
+    {% endif %}
+    <li><a>{{ comments.number }}</a></li>
+    {% if comments.has_next %}
+        <li><a href="?article_id={{ article.article_id }}&page={{ comments.next_page_number }}">下一页</a></li>
+    {% endif %}
+    <li><a href="?article_id={{ article.article_id }}&page={{ comments.paginator.num_pages }}">&raquo;</a></li>
+</ul>
+<script type="text/javascript">
+    $(document).ready(function () {
+        delEvent = function (id) {
+            {#console.log("22222222222")#}
+            var poll_date = {
+
+                comment_id: id
+            };
+            $.ajax({
+                type: "GET",
+                data: poll_date,
+                url: "{% url 'comment_del' %}",
+                cache: false,
+                success: function (date) {
+                    window.location.reload();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("删除出错，" + errorThrown);
+                }
+            });
+        }
+    });
+</script>

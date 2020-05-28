@@ -1,0 +1,74 @@
+<!-- 载入静态文件 -->
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+
+<body>
+<form action="." method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+        <textarea class="form-control" name="comment" rows="3" id="id_comment"></textarea>
+        <input type="hidden" name="video_id" value="{{ video_id }}"/>
+        <input type="hidden" name="user_id" value="{{ request.user.id }}"/>
+        <input type="hidden" name="comment_id" value="{{ parent_comment_id }}"/>
+    </div>
+</form>
+<!-- 提交按钮 -->
+<button onclick="confirm_submit()" type="submit" class="btn btn-primary">发送</button>
+
+
+<script src="{% static 'jquery/jquery-3.3.1.js' %}"></script>
+<script src="{% static 'popper/popper-1.14.4.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+<!-- csrf token -->
+<script src="{% static 'csrf.js' %}"></script>
+
+<script>
+    $(function () {
+        $(".django-ckeditor-widget").removeAttr('style');
+    });
+
+    function confirm_submit() {
+        // 从 ckeditor 中取值
+        {#let content = CKEDITOR.instances['id_body'].getData();#}
+        let comment = document.getElementById('id_comment').value
+        // 调用 ajax 与后端交换数据
+        $.ajax({
+            url: '{% url 'comment_video_post' %}',
+            type: 'POST',
+            data: {
+                "video_id":{{ video_id }},
+                "user_id":{{ request.user.id }},
+                "comment_id":{{ parent_comment_id }},
+                'comment': comment
+            },
+            traditional: true,//如果要传数组，这行一定要加！用传统的方式来序列化数据
+            // 成功回调
+            success: function (e) {
+
+                // if(e === '200 OK'){
+                //     parent.location.reload();
+                // }
+
+                if (e.code === '200 OK') {
+                    // 调用父页面的函数
+                    parent.post_reply_and_show_it(e.new_comment_id);
+                }
+                ;
+            },
+            error: function () {
+                alert("error");
+            },
+
+        });
+    }
+</script>
+
+</body>
+</html>
