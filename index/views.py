@@ -1,18 +1,19 @@
 # Create your views here.
 from django.db.models import Q
-from django.shortcuts import render, redirect, resolve_url
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse
 from gnews.models import GNews, Video, Advertising, Music
 from django.contrib.auth import logout
 from index.models import Discount
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage, InvalidPage
+from django.views import View
 
 
 # Create your views here.
 
 def index(request):
-    recommend = GNews.objects.all().order_by('-article_date')[0:6]
-    videos = Video.objects.all().order_by('-video_date')[0:6]
+    recommend = GNews.objects.all().order_by('-article_date')[0:8]
+    videos = Video.objects.all().order_by('-video_date')[0:2]
     advertising = Advertising.objects.all()
     rec = {'recommend': recommend, 'videos': videos, 'advertising': advertising}
     return render(request, 'index/index.html', rec)
@@ -28,6 +29,34 @@ def music(request):
     return render(request, 'gnews/music.html', {'music': music})
 
 
+class GameDiscount(View):
+    def get(self, request, *args, **kwargs):
+        discount = kwargs.get('discount')
+        # platform =
+        platform = request.GET.get('platform')
+        limit = request.GET.get('limit')
+        discount_games = Discount.objects.filter(type=platform)
+        paginator = Paginator(discount_games, limit, 3)
+        print(request.GET.get('page'))
+
+        if discount:
+            page = request.GET.get('page')
+            try:
+                data = paginator.page(page)
+            # todo: 注意捕获异常
+            except PageNotAnInteger:
+                # 如果请求的页数不是整数, 返回第一页。
+                data = paginator.page(1)
+            except EmptyPage:
+                # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
+                data = paginator.page(paginator.num_pages)
+            except InvalidPage:
+                # 如果请求的页数不存在, 重定向页面
+                return HttpResponse('找不到页面的内容')
+
+        return JsonResponse({'data': data})
+
+
 def discount_all(request):
     discount_all = Discount.objects.filter(type='All')
     paginator = Paginator(discount_all, 12, 3)  # 每个页面分12个内容
@@ -40,12 +69,13 @@ def discount_all(request):
         except PageNotAnInteger:
             # 如果请求的页数不是整数, 返回第一页。
             discount_all = paginator.page(1)
-        except InvalidPage:
-            # 如果请求的页数不存在, 重定向页面
-            return HttpResponse('找不到页面的内容')
         except EmptyPage:
             # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
             discount_all = paginator.page(paginator.num_pages)
+        except InvalidPage:
+            # 如果请求的页数不存在, 重定向页面
+            return HttpResponse('找不到页面的内容')
+
     return render(request, 'index/discount_all.html', {'discount_all': discount_all})
 
 

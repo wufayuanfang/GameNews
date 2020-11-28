@@ -1,62 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
 {% load static %}
-<link rel="stylesheet" type="text/css"
-      href="{% static 'users/css_js/main.css' %}">
-<div class="gnav_container gnav_container-twoRow">
-    <nav class="gnav gnav-logoCenter">
-        <div class="container">
-            <div class="gnav_menuBtns"><a class="gnav_menuBtn gnav_item" role="button" tabindex="0">
-                <svg aria-hidden="true" focusable="false" data-prefix="gfas" data-icon="bars"
-                     class="svg-inline--fa fa-sm" role="img" xmlns="http://www.w3.org/2000/svg"
-                     viewBox="0 0 9 8">
-                    <path fill="currentColor"
-                          d="M1.26666667,0.65 L8.06666667,0.65 C8.39803752,0.65 8.66666667,0.91862915 8.66666667,1.25 C8.66666667,1.58137085 8.39803752,1.85 8.06666667,1.85 L1.26666667,1.85 C0.935295817,1.85 0.666666667,1.58137085 0.666666667,1.25 C0.666666667,0.91862915 0.935295817,0.65 1.26666667,0.65 Z M1.26666667,3.65 L8.06666667,3.65 C8.39803752,3.65 8.66666667,3.91862915 8.66666667,4.25 C8.66666667,4.58137085 8.39803752,4.85 8.06666667,4.85 L1.26666667,4.85 C0.935295817,4.85 0.666666667,4.58137085 0.666666667,4.25 C0.666666667,3.91862915 0.935295817,3.65 1.26666667,3.65 Z M1.26666667,6.65 L8.06666667,6.65 C8.39803752,6.65 8.66666667,6.91862915 8.66666667,7.25 C8.66666667,7.58137085 8.39803752,7.85 8.06666667,7.85 L1.26666667,7.85 C0.935295817,7.85 0.666666667,7.58137085 0.666666667,7.25 C0.666666667,6.91862915 0.935295817,6.65 1.26666667,6.65 Z"></path>
-                </svg>
-            </a></div>
-            <div class="gnav_body">
-                <div class="gnav_logo">
-                    <div class="gnav_logo_icon"></div>
-                </div>
-                <div class="gnav_contentItems"><a class="gnav_item" href="{% url 'index' %}">首页</a><a
-                        class="gnav_item"
-                        href="{% url 'discount_all' %}">游戏</a><a
-                        class="gnav_item" href="{% url 'news' %}">资讯</a><a
-                        class="gnav_item" href="{% url 'video' %}">视频</a><a
-                        class="gnav_item" href="{% url 'music' %}">音乐</a>
-                </div>
-            </div>
+<nav class="navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
+            aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse nav-header">
+        <div class="nav-left">
+            <a class="navbar-brand" href="{% url 'index' %}">首页</a>
+            <a class="navbar-brand" href="{% url 'discount_all' %}">游戏</a>
+            <a class="navbar-brand" href="{% url 'getnews' %}">资讯</a>
+            <a class="navbar-brand" href="{% url 'getvideo' %}">视频</a>
+            <a class="navbar-brand" href="{% url 'music' %}">音乐</a>
+        </div>
 
 
+        <a class="" tabindex="0" href="{% url 'search' %}">
+            <img class="search" src="{% static 'index/img/search.png' %}"/>
+        </a>
+        <div class="nav-right">
             {% if request.user.is_authenticated %}
-                <div class="gnav_userItems">
-                    <a class="btn btn-sm btn-dark btn-ellipse gnav_item"
-                       href="{% url 'setting' %}">{{ request.user.username }}</a>
-                    <a class="btn btn-sm btn-dark btn-ellipse gnav_item" href="{% url 'logout' %}">登出</a>
-                    <a class="gnav_item" role="button" tabindex="0" href="{% url 'search' %}">
-                        <img class="search" src="{% static 'index/img/search.png' %}"/>
-                    </a>
+                <button class="btn btn-sm btn-dark btn-ellipse nav-btn" onmouseover="editor_over()"
+                        onmouseout="normal_editor()">投稿上传
+                </button>
+                <a class="btn btn-sm btn-dark btn-ellipse nav-btn"
+                   href="{% url 'setting' %}">{{ request.user.username }}</a>
+                <a class="btn btn-sm btn-dark btn-ellipse nav-btn" href="{% url 'logout' %}">登出</a>
+                <div id="editor" style="display: none" class="btn-editor">
+                    <a href="{% url 'editor' %}?type=article" class="glyphicon glyphicon-leaf">文章</a>
+                    <a href="#">视频</a>
                 </div>
             {% else %}
-                <div class="gnav_userItems"><a class="btn btn-sm btn-dark btn-ellipse gnav_item"
-                                               href="{% url 'login' %}">登录</a><a
-                        class="gnav_item" role="button" tabindex="0" href="{% url 'search' %}"><img
-                        class="search" src="{% static 'index/img/search.png' %}"/></a></div>
+                <div><a href="{% url 'login' %}">登录</a>
             {% endif %}
-
+            </div>
         </div>
-    </nav>
-</div>
+    </div>
+</nav>
+
 <style>
-    .box-right {
-        float: right;
+    .nav-right {
+        position: absolute;
+        right: 30px;
     }
 
-    .btn-default {
-    {#background: #dc3a3d;#} color: black;
-        float: left;
+    .nav-left {
+        position: absolute;
+        left: 30px;
+    }
+
+    .nav-btn {
+        margin-left: 1rem;
     }
 
     .search {
-        width: 90%;
-        float: left;
+        position: absolute;
+        left: 45%;
+        width: 30px;
+    }
+
+    .nav-header {
+        height: 80px;
     }
 </style>
+
+<script>
+    let editor = document.getElementById("editor")
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function editor_over() {
+
+        editor.style.cssText = "position:absolute;right: 140px;top: 50px;list-style: none;" +
+            "background: #ffffcc;z-index: 1;padding:10px;font-size:15px;";
+    }
+
+    async function normal_editor() {
+        await sleep(2000)
+        editor.style.display = "none"
+    }
+</script>
+</html>

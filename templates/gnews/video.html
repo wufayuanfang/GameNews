@@ -16,265 +16,98 @@
         </h5>
         <div class="body-content">
             <div class="content-one clearfix">
-
-                <div class="content-item">
-                    <video width="100%" class="video" controls="controls">
-                        <source src="{{ videos.0.video_link }}"></source>
-                        当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                    </video>
-                    <div class="item-center">
-                        <a href="{% url 'getvideo' %}?video_id={{ videos.0.id }}">
-                            <h5 class="title">
-                                {{ videos.0.video_title }}
-                            </h5>
-                        </a>
-                    </div>
-                    <div class="item-bottom clearfix">
-                        <div class="bottom-two clearfix">
-                            <div class="time">
-                                {{ videos.0.video_date }} 点击量：{{ videos.0.total_views }} 评论:{{ videos.0.comment_vidoe_set.count }}
+                <div class="row">
+                    {% for video in videos %}
+                        {% if forloop.counter < 5 %}
+                            <div class="col-lg-3">
+                                <div class="content-item">
+                                    <video width="100%" class="video" controls="controls">
+                                        <source src="{{ video.video_link }}"></source>
+                                        当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
+                                    </video>
+                                    <div class="item-center">
+                                        <a href="{% url 'getvideo' %}{{ video.id }}">
+                                            <h5 class="title">
+                                                {{ video.video_title }}
+                                            </h5>
+                                        </a>
+                                    </div>
+                                    <div class="item-bottom clearfix">
+                                        <div class="bottom-two clearfix">
+                                            <div class="time">
+                                                {{ video.video_date }} 点击量：{{ video.total_views }}
+                                                评论:{{ video.comment_vidoe_set.count }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="content-item">
-                    <video width="100%" class="video" controls="controls">
-                        <source src="{{ videos.1.video_link }}" type="video/mp4"></source>
-                        当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                    </video>
-                    <div class="item-center">
-                        <a href="{% url 'getvideo' %}?video_id={{ videos.1.id }}">
-                            <h5 class="title">
-                                {{ videos.1.video_title }}
-                            </h5>
-                        </a>
-                    </div>
-                    <div class="item-bottom clearfix">
-                        <div class="bottom-two clearfix">
-                            <div class="time">
-                                {{ videos.1.video_date }} 点击量：{{ videos.1.total_views }} 评论:{{ videos.1.comment_vidoe_set.count }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="content-item">
-                    <video width="100%" class="video" controls="controls">
-                        <source src="{{ videos.2.video_link }}" type="video/mp4"></source>
-                        当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                    </video>
-                    <div class="item-center">
-                        <a href="{% url 'getvideo' %}?video_id={{ videos.2.id }}">
-                            <h5 class="title">
-                                {{ videos.2.video_title }}
-                            </h5>
-                        </a>
-                    </div>
-                    <div class="item-bottom clearfix">
-                        <div class="bottom-two clearfix">
-
-                            <div class="time">
-                                {{ videos.2.video_date }} 点击量：{{ videos.2.total_views }} 评论:{{ videos.2.comment_vidoe_set.count }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="content-item">
-                    <video width="100%" class="video" controls="controls">
-                        <source src="{{ videos.3.video_link }}" type="video/mp4"></source>
-                        当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                    </video>
-                    <div class="item-center">
-                        <a href="{% url 'getvideo' %}?video_id={{ videos.3.id }}">
-                            <h5 class="title">
-                                {{ videos.3.video_title }}
-                            </h5>
-                        </a>
-                    </div>
-                    <div class="item-bottom clearfix">
-                        <div class="bottom-two clearfix">
-                            <div class="time">
-                                {{ videos.3.video_date }} 点击量：{{ videos.3.total_views }} 评论:{{ videos.3.comment_vidoe_set.count }}
-                            </div>
-                        </div>
-                    </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
             <div class="content-one clearfix">
-                <div class="content-item">
-                    <video width="100%" class="video" controls="controls">
-                        <source src="{{ videos.4.video_link }}" type="video/mp4"></source>
-                        当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                    </video>
-                    <div class="item-center">
-                        <a href="{% url 'getvideo' %}?video_id={{ videos.4.id }}">
-                            <h5 class="title">
-                                {{ videos.4.video_title }}
-                            </h5>
-                        </a>
-                    </div>
-                    <div class="item-bottom clearfix">
-                        <div class="bottom-two clearfix">
-                            <div class="time">
-                                {{ videos.4.video_date }} 点击量：{{ videos.4.total_views }} 评论:{{ videos.4.comment_vidoe_set.count }}
+                <div class="row">
+                    {% for video in videos %}
+                        {% if forloop.counter > 4 and forloop.counter < 9 %}
+                            <div class="col-lg-3">
+                                <div class="content-item">
+                                    <video width="100%" class="video" controls="controls">
+                                        <source src="{{ video.video_link }}"></source>
+                                        当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
+                                    </video>
+                                    <div class="item-center">
+                                        <a href="{% url 'getvideo' %}{{ videos.0.id }}">
+                                            <h5 class="title">
+                                                {{ video.video_title }}
+                                            </h5>
+                                        </a>
+                                    </div>
+                                    <div class="item-bottom clearfix">
+                                        <div class="bottom-two clearfix">
+                                            <div class="time">
+                                                {{ video.video_date }} 点击量：{{ video.total_views }}
+                                                评论:{{ video.comment_vidoe_set.count }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="content-item">
-                    <video width="100%" class="video" controls="controls">
-                        <source src="{{ videos.5.video_link }}" type="video/mp4"></source>
-                        当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                    </video>
-                    <div class="item-center">
-                        <a href="{% url 'getvideo' %}?video_id={{ videos.5.id }}">
-                            <h5 class="title">
-                                {{ videos.5.video_title }}
-                            </h5>
-                        </a>
-                    </div>
-                    <div class="item-bottom clearfix">
-                        <div class="bottom-two clearfix">
-                            <div class="time">
-                                {{ videos.5.video_date }} 点击量：{{ videos.5.total_views }} 评论:{{ videos.5.comment_vidoe_set.count }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="content-item">
-                    <video width="100%" class="video" controls="controls">
-                        <source src="{{ videos.6.video_link }}" type="video/mp4"></source>
-                        当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                    </video>
-                    <div class="item-center">
-                        <a href="{% url 'getvideo' %}?video_id={{ videos.6.id }}">
-                            <h5 class="title">
-                                {{ videos.6.video_title }}
-                            </h5>
-                        </a>
-                    </div>
-                    <div class="item-bottom clearfix">
-                        <div class="bottom-two clearfix">
-                            <div class="time">
-                                {{ videos.6.video_date }} 点击量：{{ videos.6.total_views }} 评论:{{ videos.6.comment_vidoe_set.count }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="content-item">
-                    <video width="100%" class="video" controls="controls">
-                        <source src="{{ videos.7.video_link }}" type="video/mp4"></source>
-                        当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                    </video>
-                    <div class="item-center">
-                        <a href="{% url 'getvideo' %}?video_id={{ videos.7.id }}">
-                            <h5 class="title">
-                                {{ videos.7.video_title }}
-                            </h5>
-                        </a>
-                    </div>
-                    <div class="item-bottom clearfix">
-                        <div class="bottom-two clearfix">
-                            <div class="time">
-                                {{ videos.7.video_date }} 点击量：{{ videos.7.total_views }} 评论:{{ videos.7.comment_vidoe_set.count }}
-                            </div>
-                        </div>
-                    </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
-            {% if videos.8 %}
-                <div class="content-one clearfix">
-                    {% if videos.8 %}
-                        <div class="content-item">
-                            <video width="100%" class="video" controls="controls">
-                                <source src="{{ videos.8.video_link }}" type="video/mp4"></source>
-                                当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                            </video>
-                            <div class="item-center">
-                                <a href="{% url 'getvideo' %}?video_id={{ videos.8.id }}">
-                                    <h5 class="title">
-                                        {{ videos.8.video_title }}
-                                    </h5>
-                                </a>
-                            </div>
-                            <div class="item-bottom clearfix">
-                                <div class="bottom-two clearfix">
-                                    <div class="time">
-                                        {{ videos.8.video_date }} 点击量：{{ videos.8.total_views }} 评论:{{ videos.8.comment_vidoe_set.count }}
+            <div class="content-one clearfix">
+                <div class="row">
+                    {% for video in videos %}
+                        {% if forloop.counter > 8 and forloop.counter < 13 %}
+                            <div class="col-lg-3">
+                                <div class="content-item">
+                                    <video width="100%" class="video" controls="controls">
+                                        <source src="{{ video.video_link }}"></source>
+                                        当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
+                                    </video>
+                                    <div class="item-center">
+                                        <a href="{% url 'getvideo' %}{{ video.id }}">
+                                            <h5 class="title">
+                                                {{ video.video_title }}
+                                            </h5>
+                                        </a>
+                                    </div>
+                                    <div class="item-bottom clearfix">
+                                        <div class="bottom-two clearfix">
+                                            <div class="time">
+                                                {{ video.video_date }} 点击量：{{ video.total_views }}
+                                                评论:{{ video.comment_vidoe_set.count }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endif %}
-                    {% if videos.9 %}
-                        <div class="content-item">
-                            <video width="100%" class="video" controls="controls">
-                                <source src="{{ videos.9.video_link }}" type="video/mp4"></source>
-                                当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                            </video>
-                            <div class="item-center">
-                                <a href="{% url 'getvideo' %}?video_id={{ videos.9.id }}">
-                                    <h5 class="title">
-                                        {{ videos.9.video_title }}
-                                    </h5>
-                                </a>
-                            </div>
-                            <div class="item-bottom clearfix">
-                                <div class="bottom-two clearfix">
-                                    <div class="time">
-                                        {{ videos.9.video_date }} 点击量：{{ videos.9.total_views }} 评论:{{ videos.9.comment_vidoe_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if videos.10 %}
-                        <div class="content-item">
-                            <video width="100%" class="video" controls="controls">
-                                <source src="{{ videos.10.video_link }}" type="video/mp4"></source>
-                                当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                            </video>
-                            <div class="item-center">
-                                <a href="{% url 'getvideo' %}?video_id={{ videos.10.id }}">
-                                    <h5 class="title">
-                                        {{ videos.10.video_title }}
-                                    </h5>
-                                </a>
-                            </div>
-                            <div class="item-bottom clearfix">
-                                <div class="bottom-two clearfix">
-                                    <div class="time">
-                                        {{ videos.10.video_date }} 点击量：{{ videos.10.total_views }} 评论:{{ videos.10.comment_vidoe_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if videos.11 %}
-                        <div class="content-item">
-                            <video width="100%" class="video" controls="controls">
-                                <source src="{{ videos.11.video_link }}" type="video/mp4"></source>
-                                当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
-                            </video>
-                            <div class="item-center">
-                                <a href="{% url 'getvideo' %}?video_id={{ videos.11.id }}">
-                                    <h5 class="title">
-                                        {{ videos.11.video_title }}
-                                    </h5>
-                                </a>
-                            </div>
-                            <div class="item-bottom clearfix">
-                                <div class="bottom-two clearfix">
-                                    <div class="time">
-                                        {{ videos.11.video_date }} 点击量：{{ videos.11.total_views }} 评论:{{ videos.11.comment_vidoe_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    {% endfor %}
                 </div>
-            {% endif %}
+            </div>
         </div>
     </div>
 

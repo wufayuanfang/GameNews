@@ -44,11 +44,6 @@
                                         当前浏览器不支持 video直接播放，点击这里下载视频： <a href="myvideo.webm">下载视频</a>
                                     </video>
                                 </div>
-                                {#                            <div class="col-12 alert alert-success">#}
-                                {#                                    <div>#}
-                                {#                                        评论：{{ video.comment_vidoe_set.count }}#}
-                                {#                                    </div>#}
-                                {#                                </div>#}
 
                                 <div class="newsPage_story">
                                     <div class="newsPage_info">
@@ -60,15 +55,6 @@
                                     <div class="newsPage_news">
                                         <div class="mt-5 d-flex justify-content-between">
                                             <div class="text-nowrap">
-                                                {#                                                <a class="o_vote o_vote-up mr-3 originalButton"#}
-                                                {#                                                   role="button" tabindex="0" id="poll">#}
-                                                {#                                                    <span class="glyphicon glyphicon-thumbs-up"#}
-                                                {#                                                          aria-hidden="true"></span>#}
-                                                {#                                                    <span class="o_vote_num">{{ vote_num }}</span></a>#}
-                                                {#                                                <a class="o_bookmark originalButton" role="button" tabindex="0">#}
-                                                {#                                                    <span class="glyphicon glyphicon-thumbs-up"#}
-                                                {#                                                          aria-hidden="true"></span>#}
-                                                {#                                                    <span class="o_bookmark_num">举报</span></a>#}
                                             </div>
                                             <div class="text-nowrap">
                                                 <a class="originalButton originalButton-circle" role="button"
@@ -212,29 +198,6 @@
     </div>
 </div>
 </div>
-{#<script type="text/javascript">#}
-{#    $(document).ready(function () {#}
-{#        $('#poll').bind("click", function () {#}
-{#            var poll_date = {#}
-{#                user_id:{{ request.user.id }},#}
-{#                article_id:{{ article.article_id }}#}
-{#            };#}
-{#            $.ajax({#}
-{#                type: "GET",#}
-{#                data: poll_date,#}
-{#                url: "{% url 'vote' %}",#}
-{#                cache: false,#}
-{#                success: function (date) {#}
-{#                    window.location.reload();#}
-{#                    alert(date)#}
-{#                },#}
-{#                error: function (XMLHttpRequest, textStatus, errorThrown) {#}
-{#                    alert("点赞出错，" + errorThrown);#}
-{#                }#}
-{#            });#}
-{#        });#}
-{#    });#}
-{#</script>#}
 {% block script %}
 
     <!-- csrf token -->

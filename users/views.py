@@ -7,11 +7,12 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.views import View
 
-from DjangoNews import settings
+from GameNews import settings
 from Spider.Cf import spider_cf_begin
 from Spider.Dsicount import get_all_discount
 from Spider.GCores import spider_gcores_begin
@@ -21,9 +22,10 @@ from Spider.Lol import spider_lol_begin
 from Spider.Youxun import spider_youxun_begin
 from gnews.form import GNewsModelForm
 from gnews.models import GNews, Music, Video, Poll
-from users.seedConfirmCode import make_code, send_code_register, send_code_change_password
+from users.seedConfirmCode import make_code, send_code_register, send_change_pass_link
 from .form import UserModelForm
 from .models import ConfirmString
+from utils.cos.upload import upload_img_byte_stream
 
 
 # Create your views here.
@@ -35,13 +37,12 @@ def login_view(request):
         # 处理表单信息
         # ID或密码都输入为空时向登录页面反馈
         # 当ID不存在时向登录页面反馈
-        try:
-            User.objects.get(username=username)
-        except:
+        user_exists = User.objects.filter(username=username).exists()
+
+        if not user_exists:
             tip = '输入的账号不存在！'
             form = UserModelForm()
             return render(request, 'users/login.html', locals())
-
         user = authenticate(username=username, password=password)
         # print(user.is_staff)
         user_form = UserModelForm(request.POST)
@@ -79,17 +80,18 @@ def register(request):
             form = UserModelForm()
             return render(request, 'users/register.html', {'tip': tip, 'form': form})
             # 添加数据
-        try:
-            User.objects.get(username=username)  # 能取到对象则说明用户在数据库中
+
+        user_exists = User.objects.filter(username=username).exists()
+        if user_exists:
             tip = '用户已存在！'
             return render(request, 'users/register.html', {'tip': tip})
-        except:
-            pass
-        try:
+
+        email_exists = User.objects.filter(email=email).exists()
+        if email_exists:
             User.objects.get(email=email)
             tip = '邮箱已注册！'
             return render(request, 'users/register.html', {'tip': tip})
-        except:
+        else:
             new_user = User.objects.create_user(username=username, password=password, email=email, is_staff=0,
                                                 is_active=1)
             new_user.save()
@@ -97,7 +99,7 @@ def register(request):
             send_code_register(email, code)  # 把验证码发给注册邮箱
 
             message = '账号已注册且验证码已发到邮箱，需到邮箱验证后才可登录'
-            return render(request, 'users/wating.html', {'message': message})
+            return render(request, 'users/wating.html', {'message': message, 'title': '注册确认'})
     form = UserModelForm()
     return render(request, 'users/register.html', {'form': form})
 
@@ -129,7 +131,7 @@ def spider(request):
     today = datetime.datetime.now().strftime('%Y-%m-%d')
     if spider_date > today:
         messages.warning(request, "输入的日期最大为今天！")
-        return redirect('info')
+        return redirect('setting')
     if target == 'spider_all':
         day = datetime.datetime.now().strftime('%Y-%m-%d')
 
@@ -141,37 +143,37 @@ def spider(request):
         threading.Thread(target=spider_hpjy_begin, args=(spider_date,)).start()
         threading.Thread(target=get_all_discount, ).start()
         messages.success(request, "全部的爬虫已经在后台开始!")
-        return redirect('info')
+        return redirect('setting')
 
     if target == 'gcore':
         threading.Thread(target=spider_gcores_begin, args=(spider_date,)).start()
         # spider_gcores_begin(day)
         messages.success(request, "gcores爬虫已经在后台开始!")
-        return redirect('info')
+        return redirect('setting')
     if target == 'gamesky':
         threading.Thread(target=spider_gsky_begin, args=(spider_date,)).start()
         messages.success(request, "gsky爬虫已经在后台开始!")
-        return redirect('info')
+        return redirect('setting')
     if target == 'youxun':
         threading.Thread(target=spider_youxun_begin, args=(spider_date,)).start()
         messages.success(request, "youxun已经在后台开始!")
-        return redirect('info')
+        return redirect('setting')
     if target == 'lol':
         threading.Thread(target=spider_lol_begin, args=(spider_date,)).start()
         messages.success(request, "lol爬虫已经在后台开始!")
-        return redirect('info')
+        return redirect('setting')
     if target == 'cf':
         threading.Thread(target=spider_cf_begin, args=(spider_date,)).start()
         messages.success(request, "CF爬虫已经在后台开始!")
-        return redirect('info')
+        return redirect('setting')
     if target == 'hpjy':
         threading.Thread(target=spider_hpjy_begin, args=(spider_date,)).start()
         messages.success(request, "gp爬虫已经在后台开始!")
-        return redirect('info')
+        return redirect('setting')
     if target == 'discount':
         threading.Thread(target=get_all_discount, ).start()
         messages.success(request, "discount爬虫已经在后台开始!")
-    return redirect('info')
+    return redirect('setting')
 
 
 def confirm(request):
@@ -197,68 +199,75 @@ def confirm(request):
         return render(request, 'users/wating.html', locals())
 
 
-def forgot_password(request):
-    if request.POST:
-        form = UserModelForm(request.POST)
+class ForgotPass(View):
+    def get(self, request, *args, **kwargs):
+        username = kwargs.get('username')
+        code = kwargs.get('code')
+        return render(request, 'users/change_password.html', {'username': username, 'code': code})
 
-        email = request.POST.get('email')
-        try:
-            user = User.objects.get(email=email)
-        except:
-            tip = '邮箱不存在'
-            form = UserModelForm()
-            return render(request, 'users/forgotpassword.html', {'tip': tip, 'form': form})
-        if form.is_valid():
-            exist = True
-            messages = '确认码已发送到注册邮箱'
-            # form = UserModelForm()
-            code = make_code(user)  # 创建验证码并拿到验证码
-            send_code_change_password(email, code)  # 把验证码发给注册邮箱
-            return render(request, 'users/forgotpassword.html',
-                          {'message': messages, 'user': user, 'exist': exist})
-        else:
-            exist = False
-            tip = '验证码输入错误'
-            form = UserModelForm()
-            return render(request, 'users/forgotpassword.html', {'tip': tip, 'form': form, 'exist': exist})
-
-    form = UserModelForm()
-    return render(request, 'users/forgotpassword.html', locals())
-
-
-def change_code(request):
-    if request.POST:
-        code = request.POST.get('code')
-        email = request.POST.get('email')
-        user = User.objects.get(email=email)
-        if user.confirmstring.code == code:
-            new_password = True
-            return render(request, 'users/forgotpassword.html', {'new_password': new_password, 'user': user})
-        else:
-            message = '确认码错误'
-            exist = True
-            return render(request, 'users/forgotpassword.html', {'message': message, 'exist': exist, 'user': user})
-    return redirect('forgot_password')
-
-
-def change_password(request):
-    if request.POST:
+    def post(self, request, *args, **kwargs):
         password = request.POST.get('password')
         password_again = request.POST.get('password_again')
-        email = request.POST.get('email')
-        user = User.objects.get(email=email)
-        if password == password_again:
+        username = request.POST.get('username')
+        code = request.POST.get('code')
+
+        user = User.objects.filter(username=username).first()
+
+        if not user:
+            msg = '此用户不存在'
+            return render(request, 'users/wating.html', {'message': msg, 'title': '提示信息'})
+
+        if user.confirmstring.code != code:
+            msg = '参数错误，请联系管理员'
+            return render(request, 'users/change_password.html', {'message': msg, 'username': username})
+        # 判断验证码是否有效
+        if password != password_again:
+            msg = '两次输入的密码不一致'
+            return render(request, 'users/change_password.html', {'username': username, 'code': code, 'message': msg})
+        else:
             user.set_password(password)
             # user.password = password
             user.save()  # 保存更改的数据
             user.confirmstring.delete()  # 把验证码删了
             message = '密码修改成功！！！'
             return render(request, 'users/wating.html', {'message': message})
+
+
+def forgot_password(request):
+    if request.POST:
+        form = UserModelForm(request.POST)
+        email = request.POST.get('email')
+        user = User.objects.filter(email=email).first()
+        if not user:
+            tip = '邮箱不存在'
+            form = UserModelForm()
+            return render(request, 'users/forgotpassword.html', {'tip': tip, 'form': form})
+
+        if form.is_valid():
+            msg = '确认码已发送到注册邮箱'
+            # form = UserModelForm()
+            code = make_code(user)  # 创建验证码并拿到验证码
+            # send_code_change_password(email, code)  # 把验证码发给注册邮箱
+            send_change_pass_link(email=email, code=code, username=user.username)
+            return render(request, 'users/wating.html', {'message': msg, 'title': '提示信息'})
         else:
-            new_password = True
-            message = '两次输入的密码不一致'
-            return render(request, 'users/forgotpassword.html', locals())
-    return redirect('forgot_password')
+            tip = '验证码输入错误'
+            form = UserModelForm()
+            return render(request, 'users/forgotpassword.html', {'tip': tip, 'form': form})
+
+    form = UserModelForm()
+    return render(request, 'users/forgotpassword.html', locals())
+
+
+def editor(request):
+    if request.GET:
+        editor_type = request.GET.get('type')
+        if editor_type == "article":
+            form = GNewsModelForm()
+            return render(request, 'users/upload_article.html', locals())
+        elif editor_type == "":
+            pass
+        return render(request, 'users/wating.html', {'message': "参数错误", 'title': '注册确认'})
 
 
 def orginal_editor(request):
@@ -288,15 +297,15 @@ def orginal_editor(request):
 
         ts = time.time()  # 时间戳
         today = datetime.datetime.now().strftime('%Y-%m-%d')
-        filename_cover = os.path.join(settings.MEDIA_ROOT, 'img\\' + str(ts) + cover.name)
-        cover_link = 'http://127.0.0.1:8000/media/img/' + str(ts) + cover.name
+        filename_cover = os.path.join(settings.MEDIA_ROOT, 'img//' + str(ts) + cover.name)
+        cover_link = '120.24.7.237/media/img/' + str(ts) + cover.name
         with open(filename_cover, 'wb') as f:
             # a_file.file 绑定一个已经打开的文件流对象
             for i in cover.chunks():
                 f.write(i)
         if video is not None:
-            filename_video = os.path.join(settings.MEDIA_ROOT, 'video\\' + str(ts) + video.name)
-            video_link = 'http://127.0.0.1:8000/media/video/' + str(ts) + video.name
+            filename_video = os.path.join(settings.MEDIA_ROOT, 'video//' + str(ts) + video.name)
+            video_link = '120.24.7.237/media/video/' + str(ts) + video.name
             with open(filename_video, 'wb') as f:
                 # a_file.file 绑定一个已经打开的文件流对象
                 for i in video.chunks():
@@ -330,8 +339,8 @@ def upload_video(request):
 
         ts = time.time()  # 时间戳
         today = datetime.datetime.now().strftime('%Y-%m-%d')
-        filename_video = os.path.join(settings.MEDIA_ROOT, 'video\\' + str(ts) + video.name)
-        video_link = 'http://127.0.0.1:8000/media/video/' + str(ts) + video.name
+        filename_video = os.path.join(settings.MEDIA_ROOT, 'video//' + str(ts) + video.name)
+        video_link = '120.24.7.237/media/video/' + str(ts) + video.name
         with open(filename_video, 'wb') as f:
             # a_file.file 绑定一个已经打开的文件流对象
             for i in video.chunks():
@@ -362,16 +371,16 @@ def upload_music(request):
         ts = time.time()  # 时间戳
 
         if cover is not None:
-            filename_cover = os.path.join(settings.MEDIA_ROOT, 'img\\' + str(ts) + cover.name)
-            cover_link = 'http://127.0.0.1:8000/media/img/' + str(ts) + cover.name
+            filename_cover = os.path.join(settings.MEDIA_ROOT, 'img//' + str(ts) + cover.name)
+            cover_link = '120.24.7.237/media/img/' + str(ts) + cover.name
             with open(filename_cover, 'wb') as f:
                 # a_file.file 绑定一个已经打开的文件流对象
                 for i in cover.chunks():
                     f.write(i)
         else:
             cover_link = None
-        filename_video = os.path.join(settings.MEDIA_ROOT, 'music\\' + str(ts) + music.name)
-        music_link = 'http://127.0.0.1:8000/media/music/' + str(ts) + music.name
+        filename_video = os.path.join(settings.MEDIA_ROOT, 'music//' + str(ts) + music.name)
+        music_link = '120.24.7.237/media/music/' + str(ts) + music.name
         with open(filename_video, 'wb') as f:
             # a_file.file 绑定一个已经打开的文件流对象
             for i in music.chunks():

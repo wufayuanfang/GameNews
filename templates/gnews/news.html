@@ -5,7 +5,6 @@
     <title>NEWS</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'gnews/css/news.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'gnews/css/main.css' %}"/>
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
@@ -81,10 +80,13 @@
                                 <div class="hotOriginals_body">
                                     <ul class="u_stylelessList">
                                         {% for article_hot in article_hot_list %}
-                                            <li class="mb-3 pb-3 u_borderBottomGrayFrame"><a href="{% url 'getnews' %}?article_id={{ article_hot.article_id }}"><h3
-                                                    class="hotOriginal_title">{{ article_hot.article_title }}</h3>
+                                            <li class="mb-3 pb-3 u_borderBottomGrayFrame"><a
+                                                    href="{% url 'getnews' %}?article_id={{ article_hot.article_id }}">
+                                                <h3
+                                                        class="hotOriginal_title">{{ article_hot.article_title }}</h3>
                                                 <div class="hotOriginals_btm"><span class="hotOriginal_meta"><span
-                                                        class="mr-2">{{article_hot.total_views}} 浏览</span>•<span class="ml-2">{{ article_hot.comment_set.count }} 评论</span></span>
+                                                        class="mr-2">{{ article_hot.total_views }} 浏览</span>•<span
+                                                        class="ml-2">{{ article_hot.comment_set.count }} 评论</span></span>
                                                 </div>
                                             </a></li>
                                         {% endfor %}
@@ -96,304 +98,112 @@
                 </div>
             </div>
             <div class="body-bottom clearfix">
-                {% if  recommend.3 %}
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.0.article_id }}" style="color: black;">
-                        <div class="body-bottom-item" style="display: flex;flex-direction: column;margin-left:0%;">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.0.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.0.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.0.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.0.article_date }} 浏览: {{ recommend.0.total_views }} 评论{{ recommend.0.comment_set.count }}
+                <div class="row">
+                    {% for rec in recommend %}
+                        {% if forloop.counter < 5 %}
+                            <div class="col-lg-3">
+                                <a href="{% url 'getnews' %}{{ rec.article_id }}" style="color: black;">
+                                    <div class="body-bottom-item">
+                                        <div class="item-box-one" style="width: 100%;flex: 1;">
+                                            <img src="{{ rec.article_cover }}"
+                                                 style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
+                                        </div>
+                                        <div class="item-box-two"
+                                             style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
+                                            <h5 class="title">
+                                                {{ rec.article_title }}
+                                            </h5>
+                                            <div class="text">
+                                                {{ rec.article_from }}
+                                            </div>
+                                        </div>
+                                        <div class="item-box-three"
+                                             style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
+                                            <div class="three-two">
+                                                <div class="createtime">
+                                                    {{ rec.article_date }} 浏览: {{ rec2.total_views }}
+                                                    评论{{ reco.comment_set.count }}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
-                        </div>
-                    </a>
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.1.article_id }}" style="color: black;">
-                        <div class="body-bottom-item" style="">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.1.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.1.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.1.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.1.article_date }} 浏览: {{ recommend.1.total_views }} 评论{{ recommend.1.comment_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.2.article_id }}" style="color: black;">
-                        <div class="body-bottom-item">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.2.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.2.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.2.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.2.article_date }} 浏览: {{ recommend.2.total_views }} 评论{{ recommend.2.comment_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.3.article_id }}" style="color: black;">
-                        <div class="body-bottom-item" style="">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.3.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.3.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.3.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.3.article_date }}浏览: {{ recommend.3.total_views }} 评论{{ recommend.3.comment_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
             <div class="body-bottom clearfix">
-                {% if recommend.7 %}
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.7.article_id }}" style="color: black;">
-                        <div class="body-bottom-item" style="display: flex;flex-direction: column;margin-left:0%;">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.7.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.7.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.7.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.7.article_date }}浏览: {{ recommend.7.total_views }} 评论{{ recommend.7.comment_set.count }}
+                <div class="row">
+                    {% for rec in recommend %}
+                        {% if forloop.counter > 4 and forloop.counter < 9 %}
+                            <div class="col-lg-3">
+                                <a href="{% url 'getnews' %}{{ rec.article_id }}" style="color: black;">
+                                    <div class="body-bottom-item">
+                                        <div class="item-box-one" style="width: 100%;flex: 1;">
+                                            <img src="{{ rec.article_cover }}"
+                                                 style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
+                                        </div>
+                                        <div class="item-box-two"
+                                             style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
+                                            <h5 class="title">
+                                                {{ rec.article_title }}
+                                            </h5>
+                                            <div class="text">
+                                                {{ rec.article_from }}
+                                            </div>
+                                        </div>
+                                        <div class="item-box-three"
+                                             style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
+                                            <div class="three-two">
+                                                <div class="createtime">
+                                                    {{ rec.article_date }} 浏览: {{ rec2.total_views }}
+                                                    评论{{ reco.comment_set.count }}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
-                        </div>
-                    </a>
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.4.article_id }}" style="color: black;">
-                        <div class="body-bottom-item" style="">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.4.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.4.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.4.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.4.article_date }}浏览: {{ recommend.4.total_views }} 评论{{ recommend.4.comment_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.5.article_id }}" style="color: black;">
-                        <div class="body-bottom-item">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.5.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.5.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.5.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.5.article_date }}浏览: {{ recommend.5.total_views }} 评论{{ recommend.5.comment_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.6.article_id }}" style="color: black;">
-                        <div class="body-bottom-item" style="">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.6.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.6.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.6.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.6.article_date }}浏览: {{ recommend.6.total_views }} 评论{{ recommend.6.comment_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
             <div class="body-bottom clearfix">
-                {% if recommend.11 %}
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.8.article_id }}" style="color: black;">
-                        <div class="body-bottom-item" style="display: flex;flex-direction: column;margin-left:0%;">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.8.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.8.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.8.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.8.article_date }}浏览: {{ recommend.8.total_views }} 评论{{ recommend.8.comment_set.count }}
+                <div class="row">
+                    {% for rec in recommend %}
+                        {% if forloop.counter > 8 and forloop.counter < 13 %}
+                            <div class="col-lg-3">
+                                <a href="{% url 'getnews' %}{{ rec.article_id }}" style="color: black;">
+                                    <div class="body-bottom-item">
+                                        <div class="item-box-one" style="width: 100%;flex: 1;">
+                                            <img src="{{ rec.article_cover }}"
+                                                 style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
+                                        </div>
+                                        <div class="item-box-two"
+                                             style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
+                                            <h5 class="title">
+                                                {{ rec.article_title }}
+                                            </h5>
+                                            <div class="text">
+                                                {{ rec.article_from }}
+                                            </div>
+                                        </div>
+                                        <div class="item-box-three"
+                                             style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
+                                            <div class="three-two">
+                                                <div class="createtime">
+                                                    {{ rec.article_date }} 浏览: {{ rec2.total_views }}
+                                                    评论{{ reco.comment_set.count }}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
-                        </div>
-                    </a>
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.9.article_id }}" style="color: black;">
-                        <div class="body-bottom-item" style="">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.9.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.9.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.9.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.9.article_date }}浏览: {{ recommend.9.total_views }} 评论{{ recommend.9.comment_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.10.article_id }}" style="color: black;">
-                        <div class="body-bottom-item">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.10.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.10.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.10.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.10.article_date }}浏览: {{ recommend.10.total_views }} 评论{{ recommend.10.comment_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{% url 'getnews' %}?article_id={{ recommend.11.article_id }}" style="color: black;">
-                        <div class="body-bottom-item" style="">
-                            <div class="item-box-one" style="width: 100%;flex: 1;">
-                                <img src="{{ recommend.11.article_cover }}"
-                                     style="width: 100%;height: 186px;border-radius: 4px 4px 0% 0%;"/>
-                            </div>
-                            <div class="item-box-two" style="width: 100%;flex: 1;padding: 20px;box-sizing: border-box;">
-                                <h5 class="title">
-                                    {{ recommend.11.article_title }}
-                                </h5>
-                                <div class="text">
-                                    {{ recommend.11.article_from }}
-                                </div>
-                            </div>
-                            <div class="item-box-three"
-                                 style="width: 100%;flex: 1;padding: 0 20px 20px 20px;box-sizing: border-box;">
-                                <div class="three-two">
-                                    <div class="createtime">
-                                        {{ recommend.11.article_date }}浏览: {{ recommend.11.total_views }} 评论{{ recommend.11.comment_set.count }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
         <div style="width: 400px; height:100px;margin: 0 auto;padding: 0 0 60px 0;box-sizing: border-box;">

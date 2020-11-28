@@ -16,7 +16,7 @@ class ConfirmString(models.Model):
     register_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.name + ":   " + self.code
+        return self.user.username + ":   " + self.code
 
     class Meta:
         ordering = ["-register_time"]

@@ -1,12 +1,13 @@
-from django.urls import path, include, re_path
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    path('getnews/', views.getnews, name='getnews'),
-    path('news/', views.news, name='news'),
-    path('video/', views.videos, name='video'),
+
+    path('article/', views.Article.as_view(), name='getnews'),
+    path('article/<int:pk>', views.Article.as_view(), name='getnews'),
     path('vote/', views.vote, name='vote'),
-    path('getvideo/', views.getvideo, name='getvideo')
+    path('video/', views.Video.as_view(), name='getvideo'),
+    path('video/<int:pk>', views.Video.as_view(), name='getvideo'),
 
 ]

@@ -104,16 +104,13 @@ body,
     margin-top: 50px;
     box-sizing: border-box;
     width: 100%;
-    height: 350px;
 }
 
 .body-bottom-item {
     box-shadow: 0 2px 30px rgba(0, 0, 0, 0.1);
     background: #ffffff;
-    width: 24%;
+    width: 100%;
     height: 100%;
-    float: left;
-    margin-left: 1.3%;
     box-sizing: border-box;
     border-radius: 4px;
     color: black;

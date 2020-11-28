@@ -4,12 +4,11 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 
 import django
-from bs4 import BeautifulSoup
 import re
 import requests
 import json
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DjangoNews.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "GameNews.settings")
 django.setup()
 
 from gnews.models import Video
@@ -17,7 +16,8 @@ from gnews.models import Video
 
 def getpage(url):
     req = Request(url)
-    user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'
+    user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+                 'Chrome/79.0.3945.130 Safari/537.36 '
     req.add_header('User-Agent', user_agent)
     try:
         response = urlopen(url)
@@ -56,7 +56,7 @@ def getvideo(web):
         'show1080p': 1,
     }
     r = requests.get('http://h5vv.video.qq.com/getinfo', params=params)
-    data = json.loads(r.content[len('QZOutputJson='):-1])
+    data = json.loads((r.content[len('QZOutputJson='):-1]).decode('utf-8'))
     # try:
     #     url_prefix = data['vl']['vi'][0]['ul']['ui'][0]['url']
     # except:
@@ -86,7 +86,7 @@ def getvideo(web):
                         'charge': 0,
                     }
                     r = requests.get('http://h5vv.video.qq.com/getkey', params=params)
-                    data = json.loads(r.content[len('QZOutputJson='):-1])
+                    data = json.loads((r.content[len('QZOutputJson='):-1]).decode('utf-8'))
                     url = '%s/%s?sdtfrom=v1010&vkey=%s' % (url_prefix, filename, data['key'])
                     # print(url_prefix)
                     # print(url1)

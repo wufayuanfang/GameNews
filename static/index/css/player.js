@@ -28,7 +28,7 @@ class Musics {
             id: 1,
             title: 'Driving Home for Christmas',
             singer: 'Campsite Dream',
-            songUrl: 'D:\\Django\\DjangoNews\\static\\index\\css\\Madonna - Masterpiece.mp3',
+            songUrl: 'D:\\Django\\GameNews\\static\\index\\css\\Madonna - Masterpiece.mp3',
             imageUrl: './images/songs/c.jpg'
         },
             {

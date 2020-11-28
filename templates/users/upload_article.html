@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>上传文章</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<style>
+    .form-article {
+        padding: 50px 200px 200px 200px;
+    }
+</style>
+<body>
+{% include 'index/header.html' %}
+<div class="row">
+    <form method="POST" action="#" enctype="multipart/form-data" class="form-article form-group"
+          name="articleFrom" onsubmit="return validateFrom()">
+        {% csrf_token %}
+        <div class="form-group row has-success"><label
+                class="col-form-label col-sm-2">文章标题</label>
+            <div class="col-sm-10 has-success">
+                <input name="title" placeholder="文章标题" class="form-control" type="text" required="required">
+                <span id="help-title" style="color: red"></span>
+            </div>
+        </div>
+        <div class="form-group row"><label
+                class="col-form-label col-sm-2">文章作者</label>
+            <div class="col-sm-10">
+                <input name="from" placeholder="{{ request.user.username }}"
+                       class="form-control" type="text" value="{{ request.user.username }}"
+                       readonly="readonly">
+            </div>
+        </div>
+        <div class="form-group row"><label
+                class="col-form-label col-sm-2">文章封面</label>
+            <div class="col-sm-10">
+                <input name="cover" placeholder="文章封面" accept="image/jpeg" type="file">
+                <span id="help-cover" style="color: red"></span>
+            </div>
+        </div>
+        <div class="form-group row"><label
+                class="col-form-label col-sm-2">文章内容</label>
+            <div class="col-sm-10">
+                {{ form.media }}
+                {{ form.article_contents }}
+                <span id="help-content" style="color: red"></span>
+            </div>
+        </div>
+        <div class="form-group row"><label
+                class="col-form-label col-sm-2">文章视频</label>
+            <div class="col-sm-10">
+                <input name="video" placeholder="文章视频" accept="video/mp4" type="file">
+            </div>
+        </div>
+        <div class="form-group row"><label
+                class="col-form-label col-sm-2"></label>
+            <div class="col-sm-10">
+                <button class="btn btn-assist btn-ellipse" type="submit"
+                        style="background: #6ddc67;">确认上传
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+<script>
+    let title = document.getElementById('help-title')
+    let content = document.getElementById('help-content')
+
+    function validateFrom() {
+        let title_f = document.forms["articleFrom"]["title"].value;
+        let content_f = document.forms["articleFrom"]["article_contents"].value;
+        if (title_f.length > 50) {
+            title.innerHTML = "字数不能大于50"
+            return false
+        }
+        title.innerHTML = "";
+        if (content_f == null || content_f === "") {
+            content.innerHTML = "内容不能为空"
+            return false
+        }
+        content.innerHTML = "";
+        return true
+    }
+</script>
+</html>

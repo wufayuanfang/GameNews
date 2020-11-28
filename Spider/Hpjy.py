@@ -9,7 +9,7 @@ import re
 import requests
 import json
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DjangoNews.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "GameNews.settings")
 django.setup()
 
 from gnews.models import Video
@@ -49,7 +49,7 @@ def getvideo(vid):
         'show1080p': 1,
     }
     r = requests.get('http://h5vv.video.qq.com/getinfo', params=params)
-    data = json.loads(r.content[len('QZOutputJson='):-1])
+    data = json.loads((r.content[len('QZOutputJson='):-1]).decode('utf-8'))
 
     url_prefix = data['vl']['vi'][0]['ul']['ui'][0]['url']
 
@@ -74,7 +74,7 @@ def getvideo(vid):
                     'charge': 0,
                 }
                 r = requests.get('http://h5vv.video.qq.com/getkey', params=params)
-                data = json.loads(r.content[len('QZOutputJson='):-1])
+                data = json.loads((r.content[len('QZOutputJson='):-1]).decode('utf-8'))
                 url = '%s/%s?sdtfrom=v1010&vkey=%s' % (url_prefix, filename, data['key'])
                 # print(url_prefix)
                 # print(url1)

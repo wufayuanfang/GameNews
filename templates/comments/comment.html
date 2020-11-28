@@ -1,65 +1,161 @@
 <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-<div class="panel panel-default" style="margin-top: 60px">
-    <div class="panel-heading">
-        <h3 class="panel-title">
-            评论
-        </h3>
-    </div>
-    {% for comment in comments %}
-        <div class="panel-body">
-            <div class="container">
-                <h6>{{ comment.user.username }}<small>&ensp;{{ comment.created_time }}</small>
-                </h6>
-                <p>{{ comment.text }}</p>{% if comment.user.username == user.username %}
-                <input type="hidden" id="commnet_id" value="{{ comment.id }}">
-                <button style="font-size: small; color: green;float: right;border: none"
-                        onClick="delEvent({{ comment.id }})" id="commne_del">删除
+{% load static %}
+<script src="{% static 'jquery/jquery-3.3.1.js' %}"></script>
+<script src="{% static 'axios/axios.min.js' %}"></script>
+<script src="{% static 'vue/vue.js' %}"></script>
+<div id="comment">
+    {% verbatim myblock %}
+        <div class="form-group">
+            <label for="id_comment">添加评论</label>
+            <textarea class="form-control" rows="3" v-model="comment"></textarea>
+        </div>
+        <div class="form-group">
+            <button v-on:click="post_comment()" type="submit" class="btn btn-default"
+                    style="background: #ff752a">发表评论
+            </button>
+        </div>
+        <div class="panel panel-default" style="margin-top: 60px">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    评论
+                </h3>
+            </div>
+            <div v-for="(comment,index) in comments" :key="comment.comment_id" class="panel-body">
+                <div class="container">
+                    <h6>{{ comment.user }} <small>&ensp;{{ comment.created_time | formatTimer }} </small></h6>
+                    <p>{{ comment.text }} </p>
+                </div>
+                <button v-if="comment.user == username" v-on:click="delete_comment(comment.comment_id,index)"
+                        class="btn btn-light btn-sm text-muted">删除
                 </button>
-            {% endif %}
+            </div>
+            <div v-show="num_pages == 0" class="panel-body">
+                <div class="container">
+                    <p>无评论</p>
+                </div>
             </div>
         </div>
-    {% empty %}
-        <div class="panel-body">
-            <div class="container">
-                <p>无评论</p>
-            </div>
-        </div>
-    {% endfor %}
-</div>
-<ul class="pagination pagination-sm" style="margin-left: 38%">
-    {% if comments.number > 1 %}
-        <li><a href="?article_id={{ article.article_id }}&page=1">&laquo;</a></li>
-    {% endif %}
-    {% if comments.has_previous %}
-        <li><a href="?article_id={{ article.article_id }}&page={{ comments.previous_page_number }}">上一页</a></li>
-    {% endif %}
-    <li><a>{{ comments.number }}</a></li>
-    {% if comments.has_next %}
-        <li><a href="?article_id={{ article.article_id }}&page={{ comments.next_page_number }}">下一页</a></li>
-    {% endif %}
-    <li><a href="?article_id={{ article.article_id }}&page={{ comments.paginator.num_pages }}">&raquo;</a></li>
-</ul>
-<script type="text/javascript">
-    $(document).ready(function () {
-        delEvent = function (id) {
-            {#console.log("22222222222")#}
-            var poll_date = {
 
-                comment_id: id
-            };
-            $.ajax({
-                type: "GET",
-                data: poll_date,
-                url: "{% url 'comment_del' %}",
-                cache: false,
-                success: function (date) {
-                    window.location.reload();
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert("删除出错，" + errorThrown);
+        <ul class="pagination pagination-sm" style="margin-left: 38%">
+            <li v-show="page > 1"><a v-on:click="get_comments(1);page = 1">&laquo;</a></li>
+            <li v-show="page > 1"><a v-on:click="prev_page()">上一页</a></li>
+            <li><a>{{ page }}</a></li>
+            <li v-show="page < num_pages"><a v-on:click="next_page()">下一页</a></li>
+            <li v-show="page < num_pages"><a v-on:click="get_comments(num_pages);page=num_pages">&raquo;</a></li>
+        </ul>
+    {% endverbatim myblock %}
+    {% csrf_token %}
+</div>
+<script type="text/javascript">
+    var vm1 = new Vue({
+        // 选项
+        el: '#comment',
+        data: {
+            user_id: {{ request.user.id }},
+            username: '{{ request.user }}',
+            article_id: {{article.article_id}},
+            comments: [],
+            comment: '',
+            page: 1,
+            num_pages: 0
+        },
+        created: function () {
+            // `this` 指向 vm 实例
+            axios.get('{% url 'comments' %}', {
+                params: {
+                    article_id: {{ article.article_id }},
+                    page: this.page
                 }
-            });
+            })
+                .then((response) => {
+                    this.comments = response.data.data
+                    this.num_pages = response.data.num_pages
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        },
+        filters: {
+            formatTimer: function (value) {
+                let date = new Date(value);
+                let y = date.getFullYear();
+                let MM = date.getMonth() + 1;
+                MM = MM < 10 ? "0" + MM : MM;
+                let d = date.getDate();
+                d = d < 10 ? "0" + d : d;
+                let h = date.getHours();
+                h = h < 10 ? "0" + h : h;
+                let m = date.getMinutes();
+                m = m < 10 ? "0" + m : m;
+                let s = date.getSeconds();
+                s = s < 10 ? "0" + s : s;
+                return y + "-" + MM + "-" + d + " " + h + ":" + m;
+            }
+        },
+        methods: {
+            get_comments: function (page) {
+                axios.get('{% url 'comments' %}', {
+                    params: {
+                        article_id: {{ article.article_id }},
+                        page: page
+                    }
+                })
+                    .then((response) => {
+                        this.comments = response.data.data
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            prev_page: function () {
+                this.get_comments(this.page - 1)
+                this.page--
+            },
+            next_page: function () {
+                this.get_comments(this.page + 1)
+                this.page++
+            },
+            delete_comment: function (id, index) {
+                axios.delete('{% url 'comments' %}', {
+                    data: {
+                        comment_id: id,
+                    },
+                    headers: {"X-CSRFToken": $('[name="csrfmiddlewaretoken"]').val()},
+                })
+                    .then((response) => {
+                        if (response.data.code == 200) {
+                            this.comments.splice(index, 1)
+                            alert('删除成功！');
+                        } else {
+                            alert('删除失败,参数有误！');
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            post_comment: function () {
+                console.log(this.comment, 8888)
+                axios.post('{% url 'comments' %}', {
+
+                    user_id: this.user_id,
+                    article_id: this.article_id,
+                    comment: this.comment
+
+                }, {headers: {"X-CSRFToken": $('[name="csrfmiddlewaretoken"]').val()},})
+                    .then((response) => {
+                        if (response.data.code == 200) {
+                            this.comments.unshift(response.data.data)
+                            this.comment = ""
+                            alert('评论成功！');
+                        } else {
+                            alert('评论失败,参数有误！');
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
         }
-    });
+    })
 </script>

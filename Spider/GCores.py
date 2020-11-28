@@ -6,7 +6,7 @@ import re
 import os, django
 import time
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DjangoNews.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "GameNews.settings")
 django.setup()
 from gnews.models import GNews
 
