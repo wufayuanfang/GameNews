@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from gnews.models import GNews, Video, Advertising, Music
 from django.contrib.auth import logout
-from index.models import Discount
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage, InvalidPage
 from django.views import View
 
@@ -29,138 +28,25 @@ def music(request):
     return render(request, 'gnews/music.html', {'music': music})
 
 
-class GameDiscount(View):
-    def get(self, request, *args, **kwargs):
-        discount = kwargs.get('discount')
-        # platform =
-        platform = request.GET.get('platform')
-        limit = request.GET.get('limit')
-        discount_games = Discount.objects.filter(type=platform)
-        paginator = Paginator(discount_games, limit, 3)
-        print(request.GET.get('page'))
-
-        if discount:
-            page = request.GET.get('page')
-            try:
-                data = paginator.page(page)
-            # todo: 注意捕获异常
-            except PageNotAnInteger:
-                # 如果请求的页数不是整数, 返回第一页。
-                data = paginator.page(1)
-            except EmptyPage:
-                # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
-                data = paginator.page(paginator.num_pages)
-            except InvalidPage:
-                # 如果请求的页数不存在, 重定向页面
-                return HttpResponse('找不到页面的内容')
-
-        return JsonResponse({'data': data})
-
-
-def discount_all(request):
-    discount_all = Discount.objects.filter(type='All')
-    paginator = Paginator(discount_all, 12, 3)  # 每个页面分12个内容
-    if request.method == "GET":
-        # 获取 url 后面的 page 参数的值, 首页不显示 page 参数, 默认值是 1
-        page = request.GET.get('page')
-        try:
-            discount_all = paginator.page(page)
-        # todo: 注意捕获异常
-        except PageNotAnInteger:
-            # 如果请求的页数不是整数, 返回第一页。
-            discount_all = paginator.page(1)
-        except EmptyPage:
-            # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
-            discount_all = paginator.page(paginator.num_pages)
-        except InvalidPage:
-            # 如果请求的页数不存在, 重定向页面
-            return HttpResponse('找不到页面的内容')
-
-    return render(request, 'index/discount_all.html', {'discount_all': discount_all})
-
-
-def discount_steam(request):
-    discount_all = Discount.objects.filter(type='Steam')
-    paginator = Paginator(discount_all, 12, 3)  # 每个页面分12个内容
-    if request.method == "GET":
-        # 获取 url 后面的 page 参数的值, 首页不显示 page 参数, 默认值是 1
-        page = request.GET.get('page')
-        try:
-            discount_all = paginator.page(page)
-        # todo: 注意捕获异常
-        except PageNotAnInteger:
-            # 如果请求的页数不是整数, 返回第一页。
-            discount_all = paginator.page(1)
-        except InvalidPage:
-            # 如果请求的页数不存在, 重定向页面
-            return HttpResponse('找不到页面的内容')
-        except EmptyPage:
-            # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
-            discount_all = paginator.page(paginator.num_pages)
-    return render(request, 'index/discount_steam.html', {'discount_all': discount_all})
-
-
-def discount_switch(request):
-    discount_all = Discount.objects.filter(type='Switch')
-    paginator = Paginator(discount_all, 12, 3)  # 每个页面分12个内容
-    if request.method == "GET":
-        # 获取 url 后面的 page 参数的值, 首页不显示 page 参数, 默认值是 1
-        page = request.GET.get('page')
-        try:
-            discount_all = paginator.page(page)
-        # todo: 注意捕获异常
-        except PageNotAnInteger:
-            # 如果请求的页数不是整数, 返回第一页。
-            discount_all = paginator.page(1)
-        except InvalidPage:
-            # 如果请求的页数不存在, 重定向页面
-            return HttpResponse('找不到页面的内容')
-        except EmptyPage:
-            # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
-            discount_all = paginator.page(paginator.num_pages)
-    return render(request, 'index/discount_switch.html', {'discount_all': discount_all})
-
-
-def discount_ps(request):
-    discount_all = Discount.objects.filter(type='PS4')
-    paginator = Paginator(discount_all, 12, 3)  # 每个页面分12个内容
-    if request.method == "GET":
-        # 获取 url 后面的 page 参数的值, 首页不显示 page 参数, 默认值是 1
-        page = request.GET.get('page')
-        try:
-            discount_all = paginator.page(page)
-        # todo: 注意捕获异常
-        except PageNotAnInteger:
-            # 如果请求的页数不是整数, 返回第一页。
-            discount_all = paginator.page(1)
-        except InvalidPage:
-            # 如果请求的页数不存在, 重定向页面
-            return HttpResponse('找不到页面的内容')
-        except EmptyPage:
-            # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
-            discount_all = paginator.page(paginator.num_pages)
-    return render(request, 'index/discount_ps.html', {'discount_all': discount_all})
-
-
-def discount_xbox(request):
-    discount_all = Discount.objects.filter(type='Xbox')
-    paginator = Paginator(discount_all, 12, 3)  # 每个页面分12个内容
-    if request.method == "GET":
-        # 获取 url 后面的 page 参数的值, 首页不显示 page 参数, 默认值是 1
-        page = request.GET.get('page')
-        try:
-            discount_all = paginator.page(page)
-        # todo: 注意捕获异常
-        except PageNotAnInteger:
-            # 如果请求的页数不是整数, 返回第一页。
-            discount_all = paginator.page(1)
-        except InvalidPage:
-            # 如果请求的页数不存在, 重定向页面
-            return HttpResponse('找不到页面的内容')
-        except EmptyPage:
-            # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
-            discount_all = paginator.page(paginator.num_pages)
-    return render(request, 'index/discount_xbox.html', {'discount_all': discount_all})
+# def discount_xbox(request):
+#     discount_all = Discount.objects.filter(type='Xbox')
+#     paginator = Paginator(discount_all, 12, 3)  # 每个页面分12个内容
+#     if request.method == "GET":
+#         # 获取 url 后面的 page 参数的值, 首页不显示 page 参数, 默认值是 1
+#         page = request.GET.get('page')
+#         try:
+#             discount_all = paginator.page(page)
+#         # todo: 注意捕获异常
+#         except PageNotAnInteger:
+#             # 如果请求的页数不是整数, 返回第一页。
+#             discount_all = paginator.page(1)
+#         except InvalidPage:
+#             # 如果请求的页数不存在, 重定向页面
+#             return HttpResponse('找不到页面的内容')
+#         except EmptyPage:
+#             # 如果请求的页数不在合法的页数范围内，返回结果的最后一页。
+#             discount_all = paginator.page(paginator.num_pages)
+#     return render(request, 'index/discount_xbox.html', {'discount_all': discount_all})
 
 
 def search(request):

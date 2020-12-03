@@ -1,7 +1,5 @@
 import datetime
-import os
 import threading
-import time
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -12,20 +10,18 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views import View
 
-from GameNews import settings
 from Spider.Cf import spider_cf_begin
-from Spider.Dsicount import get_all_discount
 from Spider.GCores import spider_gcores_begin
 from Spider.GSky import spider_gsky_begin
 from Spider.Hpjy import spider_hpjy_begin
 from Spider.Lol import spider_lol_begin
 from Spider.Youxun import spider_youxun_begin
 from gnews.form import GNewsModelForm
-from gnews.models import GNews, Music, Video, Poll
+from gnews.models import GNews, Video, Poll
 from users.seedConfirmCode import make_code, send_code_register, send_change_pass_link
 from .form import UserModelForm
 from .models import ConfirmString
-from utils.cos.upload import upload_img_byte_stream
+from utils.permission.auth_superuser import superuser_required
 
 
 # Create your views here.
@@ -124,6 +120,7 @@ def setting(request):
     return render(request, 'users/setting.html', {'today': today})
 
 
+@superuser_required(to='setting')
 def spider(request):
     target = request.GET.get('target')
     spider_date = request.GET.get('spider_date')
@@ -131,18 +128,6 @@ def spider(request):
     today = datetime.datetime.now().strftime('%Y-%m-%d')
     if spider_date > today:
         messages.warning(request, "输入的日期最大为今天！")
-        return redirect('setting')
-    if target == 'spider_all':
-        day = datetime.datetime.now().strftime('%Y-%m-%d')
-
-        threading.Thread(target=spider_gcores_begin, args=(spider_date,)).start()
-        threading.Thread(target=spider_gsky_begin, args=(spider_date,)).start()
-        threading.Thread(target=spider_youxun_begin, args=(spider_date,)).start()
-        threading.Thread(target=spider_lol_begin, args=(spider_date,)).start()
-        threading.Thread(target=spider_cf_begin, args=(spider_date,)).start()
-        threading.Thread(target=spider_hpjy_begin, args=(spider_date,)).start()
-        threading.Thread(target=get_all_discount, ).start()
-        messages.success(request, "全部的爬虫已经在后台开始!")
         return redirect('setting')
 
     if target == 'gcore':
@@ -170,9 +155,6 @@ def spider(request):
         threading.Thread(target=spider_hpjy_begin, args=(spider_date,)).start()
         messages.success(request, "gp爬虫已经在后台开始!")
         return redirect('setting')
-    if target == 'discount':
-        threading.Thread(target=get_all_discount, ).start()
-        messages.success(request, "discount爬虫已经在后台开始!")
     return redirect('setting')
 
 
@@ -268,128 +250,6 @@ def editor(request):
         elif editor_type == "":
             pass
         return render(request, 'users/wating.html', {'message': "参数错误", 'title': '注册确认'})
-
-
-def orginal_editor(request):
-    if request.POST:
-        article_post_form = GNewsModelForm(data=request.POST)
-        title = request.POST.get('title')
-        cover = request.FILES.get('cover')
-        contents = request.POST.get('article_contents')
-        video = request.FILES.get('video')
-        author = request.POST.get('from')
-
-        # 判断信息输入是否为空
-        if title is None:
-            gnew_form = GNewsModelForm()
-            messages = '标题不能为空'
-            return render(request, 'users/original_editor.html', {'gnew_form': gnew_form, 'messages': messages})
-
-        if cover is None:
-            gnew_form = GNewsModelForm()
-            messages = '封面不能为空'
-            return render(request, 'users/original_editor.html', {'gnew_form': gnew_form, 'messages': messages})
-
-        if contents is None:
-            gnew_form = GNewsModelForm()
-            messages = '内容不能为空'
-            return render(request, 'users/original_editor.html', {'gnew_form': gnew_form, 'messages': messages})
-
-        ts = time.time()  # 时间戳
-        today = datetime.datetime.now().strftime('%Y-%m-%d')
-        filename_cover = os.path.join(settings.MEDIA_ROOT, 'img//' + str(ts) + cover.name)
-        cover_link = '120.24.7.237/media/img/' + str(ts) + cover.name
-        with open(filename_cover, 'wb') as f:
-            # a_file.file 绑定一个已经打开的文件流对象
-            for i in cover.chunks():
-                f.write(i)
-        if video is not None:
-            filename_video = os.path.join(settings.MEDIA_ROOT, 'video//' + str(ts) + video.name)
-            video_link = '120.24.7.237/media/video/' + str(ts) + video.name
-            with open(filename_video, 'wb') as f:
-                # a_file.file 绑定一个已经打开的文件流对象
-                for i in video.chunks():
-                    f.write(i)
-        else:
-            video_link = None
-        gnews = GNews(article_title=title, article_date=today, article_cover=cover_link, article_contents=contents,
-                      article_from=author, article_video=video_link)
-        gnews.save()
-        gnew_form = GNewsModelForm()
-        messages = '上传成功'
-        return render(request, 'users/original_editor.html', {'gnew_form': gnew_form, 'messages': messages})
-
-    gnew_form = GNewsModelForm()
-    return render(request, 'users/original_editor.html', {'gnew_form': gnew_form})
-
-
-def upload_video(request):
-    if request.POST:
-        title = request.POST.get('title')
-        video = request.FILES.get('video')
-        author = request.POST.get('from')
-
-        if title is None:
-            messages = '标题不能为空'
-            return render(request, 'users/upload_video.html', {'messages': messages})
-
-        if video is None:
-            messages = '视频不能为空'
-            return render(request, 'users/upload_video.html', {'messages': messages})
-
-        ts = time.time()  # 时间戳
-        today = datetime.datetime.now().strftime('%Y-%m-%d')
-        filename_video = os.path.join(settings.MEDIA_ROOT, 'video//' + str(ts) + video.name)
-        video_link = '120.24.7.237/media/video/' + str(ts) + video.name
-        with open(filename_video, 'wb') as f:
-            # a_file.file 绑定一个已经打开的文件流对象
-            for i in video.chunks():
-                f.write(i)
-        videos = Video(video_title=title, video_date=today, video_from=author, video_link=video_link)
-        videos.save()
-        messages = '上传成功'
-        return render(request, 'users/upload_video.html', {'messages': messages})
-    return render(request, 'users/upload_video.html')
-
-
-def upload_music(request):
-    if request.POST:
-        title = request.POST.get('title')
-        cover = request.FILES.get('cover')
-        music = request.FILES.get('music')
-        singer = request.POST.get('singer')
-
-        # 判断信息输入是否为空
-        if title is None:
-            messages = '歌名不能为空'
-            return render(request, 'users/upload_music.html', {'messages': messages})
-
-        if music is None:
-            messages = '音乐文件不能为空'
-            return render(request, 'users/upload_music.html', {'messages': messages})
-
-        ts = time.time()  # 时间戳
-
-        if cover is not None:
-            filename_cover = os.path.join(settings.MEDIA_ROOT, 'img//' + str(ts) + cover.name)
-            cover_link = '120.24.7.237/media/img/' + str(ts) + cover.name
-            with open(filename_cover, 'wb') as f:
-                # a_file.file 绑定一个已经打开的文件流对象
-                for i in cover.chunks():
-                    f.write(i)
-        else:
-            cover_link = None
-        filename_video = os.path.join(settings.MEDIA_ROOT, 'music//' + str(ts) + music.name)
-        music_link = '120.24.7.237/media/music/' + str(ts) + music.name
-        with open(filename_video, 'wb') as f:
-            # a_file.file 绑定一个已经打开的文件流对象
-            for i in music.chunks():
-                f.write(i)
-        musics = Music(title=title, singer=singer, songUrl=music_link, imageUrl=cover_link)
-        musics.save()
-        messages = '上传成功'
-        return render(request, 'users/upload_music.html', {'messages': messages})
-    return render(request, 'users/upload_music.html')
 
 
 def my_vote(request):

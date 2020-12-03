@@ -4,7 +4,6 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 
 import django
-from bs4 import BeautifulSoup
 import re
 import requests
 import json

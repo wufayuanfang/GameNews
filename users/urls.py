@@ -16,10 +16,8 @@ urlpatterns = [
 
     path('editor/', views.editor, name="editor"),
 
-    path('orginal_editor/', views.orginal_editor, name='orginal_editor'),
-    path('upload_video/', views.upload_video, name='upload_video'),
-    path('upload_music/', views.upload_music, name='upload_music'),
     path('spider/', views.spider, name='spider'),
+
     path('my_vote/', views.my_vote, name='my_vote'),
 
 ]
